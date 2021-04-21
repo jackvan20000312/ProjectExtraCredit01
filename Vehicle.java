@@ -9,17 +9,18 @@ public class Vehicle {
     private char destination;
 
     /**
-     *  Constructs a  Light-object with b bornTime and d destination
+     *  Constructs a  Vehicle-object with b bornTime and d destination
      */
-    public Vehicle(int b, char d)
-    {
+    public Vehicle(int b, char d){
+    	this.bornTime=b;
+    	this.destination=d;
     }
 
     /**
      * @return A String-representation of the vechile and its bornTime and destination
      */
-    public String toString()
-    {
-        return null;
+    public String toString(){
+    	
+        return (bornTime+", "+destination);
     }
 }

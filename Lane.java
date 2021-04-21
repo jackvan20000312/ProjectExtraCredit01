@@ -10,8 +10,8 @@ public class Lane {
     /**
      *  Constructs a  Lane-object with place for n vehicles
      */
-    public Lane(int n)
-    {
+    public Lane(int n){
+    	this.theLane = new Vehicle[n];
     }
 
     /**
@@ -19,17 +19,21 @@ public class Lane {
      * (if possible). (The vehicle at position 0 is removed before calling
      * this method using the method below).
      */
-    public void step()
-    {
+    public void step(){
+    	for(int i=1; i<theLane.length; i++) {
+    		theLane[i-1]=theLane[i];
+    		theLane[i]=null;
+    	}
     }
 
     /**
      * Removes the first vehicel
      * @return The Vehicle at the first place or null if it is empty
      */
-    public Vehicle removeFirst()
-    {
-        return null;
+    public Vehicle removeFirst(){
+    	Vehicle temp= theLane[0];
+    	this.theLane[0]= null;
+        return temp;
     }
 
     /**
@@ -37,17 +41,16 @@ public class Lane {
      * @return A reference to the vehicle in the first place or null if it is
      * empty
      */
-    public Vehicle getFirst()
-    {
-        return null;
+    public Vehicle getFirst(){
+        return this.theLane[0];
     }
 
     /**
      * @return true if the last place if empty, else false
      */
-    public boolean lastFree()
-    {
-        return true;
+    public boolean lastFree(){
+       
+    	return true;
     }
 
     /**
