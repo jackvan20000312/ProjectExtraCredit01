@@ -13,18 +13,19 @@ public class Simulation {
         TrafficSystem tf = new TrafficSystem();
 
         //...
-
-        while (true){
-            try {
-                // If the printouts are done each timestep, a pause is needed
-                Thread.sleep(100);
-            }
-            catch (InterruptedException e){
-            }
+int i=0;
+        while (i<10000){
+//            try {
+//                // If the printouts are done each timestep, a pause is needed
+//                Thread.sleep(500);
+//            }
+//            catch (InterruptedException e){
+//            }
             tf.step();
             tf.print();
+            i+=10;
         }
-
+        tf.printStatistics();
         ///...
     }
 }
