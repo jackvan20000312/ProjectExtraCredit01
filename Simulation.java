@@ -5,27 +5,23 @@ package edu.mtc.egr283.ProjectExtraCredit01;
  */
 public class Simulation {
 
-    /**
-     * Create a TrafficSystem, steps it and calls the print methods
-     */
-    public static void main(String [] args)
-    {
-        TrafficSystem tf = new TrafficSystem();
+	/**
+	 * Create a TrafficSystem, steps it and calls the print methods
+	 */
+	public static void main(String [] args){
+		TrafficSystem tf = new TrafficSystem();
+		int i=0;
+		while (i<100){
+			try {
+				// If the printouts are done each timestep, a pause is needed
+				Thread.sleep(50);
+			}catch (InterruptedException e){
+			}
+			tf.step();
+			System.out.print(tf.print());
+			i++;
+		}//end of while loop
+		System.out.print(tf.printStatistics());
 
-        //...
-int i=0;
-        while (i<100){
-           try {
-                // If the printouts are done each timestep, a pause is needed
-                Thread.sleep(50);
-            }
-            catch (InterruptedException e){
-            }
-            tf.step();
-            tf.print();
-            i++;
-        }
-        tf.printStatistics();
-        ///...
-    }
-}
+	}//end of main method
+}//end of class

@@ -59,44 +59,37 @@ public class TrafficSystem{
 	private Light s1;
 	private Light s2;
 
-	// Various attributes for simulation parameters (intensity of arrivals, destinations...)
+	// Various attributes for simulation parameters (intensity of arrivals, destinations...) CONSTANTS 
 	private final int INTENSITY_OF_SOUTH=50;//percentage out of a hundred so 50% =50
 	private final int INTENSITY_OF_ARRIVALS=80;//percentage out of a hundred so 50% =50
 	private final char SOUTH='S';
 	private final char WEST='W';
-
-	
-	// Various attributes for collection of statistics
 	private final int S1_GREEN_LENGTH=3;//time steps
 	private final int S2_GREEN_LENGTH=2;//time steps
 	private final int PERIOD_LENGTH=7;//time steps
+	private final int TWO_ROADS_LENGTH=10;
+	private final int ROADLENGTH=30;
 
-
-	private final int shoulderLength=10;
-	private final int roadLength=30;
-	private int time;
-	private int stuck1=0;
+	// Various attributes for collection of statistics
+	private int time;//internal clock
+	private int stuckTime=0;//time stuck
 	private LinkedList<Integer> s1AverageTimes;
 	private LinkedList<Integer> s2AverageTimes;
+
+
 	public TrafficSystem(){
-		this.r0=new Lane(this.roadLength);
-		this.r1=new Lane(this.shoulderLength);
-		this.r2=new Lane(this.shoulderLength);
-		this.s1=new Light(this.PERIOD_LENGTH,this.S1_GREEN_LENGTH);
-		this.s2=new Light(this.PERIOD_LENGTH,this.S2_GREEN_LENGTH);
+		this.r0=new Lane(this.ROADLENGTH);
+		this.r1=new Lane(this.TWO_ROADS_LENGTH);
+		this.r2=new Lane(this.TWO_ROADS_LENGTH);
+		this.s1=new Light(this.PERIOD_LENGTH, this.S1_GREEN_LENGTH);
+		this.s2=new Light(this.PERIOD_LENGTH, this.S2_GREEN_LENGTH);
 		this.time=0;
 		this.s1AverageTimes=new LinkedList<Integer>();
 		this.s2AverageTimes=new LinkedList<Integer>();
-
-	}
+	}//Ending Bracket of Constructor
 
 	/**
 	 * Defines how vehicles should move in the system.
-	 * 		*if light is green, remove first vehicle from shoulder(do for both shoulders)
-	 * 		*step r1&r2
-	 * 		*if vehicle in r0 is W or S, send to correct Shoulder(r1, r2)
-	 * 		*step r0(main road)
-	 * 		*
 	 * Steps the system one time step using the step methods in the components
 	 * Creates vehicles, add and remove into the different lanes.
 	 */
@@ -104,62 +97,68 @@ public class TrafficSystem{
 		this.time++;
 		this.s1.step();//lights
 		this.s2.step();
+
 		if(this.s1.isGreen()) {//moves vehicles in shoulder lanes
-			if(this.r1.getFirst()!=null) {
-				this.s1AverageTimes.add(this.time-this.r1.removeFirst().getBornTime());
-			}else {
-				this.r1.removeFirst();
-			}
-		} if(this.s2.isGreen()) {
-			if(this.r2.getFirst()!=null) {
-				this.s2AverageTimes.add(this.time-this.r2.removeFirst().getBornTime());
-			}else {
-				this.r2.removeFirst();
-			}
-		}
+			Vehicle temp=this.r1.removeFirst();
+			if(temp!=null) {
+				this.s1AverageTimes.add(this.time-temp.getBornTime());
+			}//Ending bracket of if statement.
+		} //Ending bracket of if statement.
+
+		if(this.s2.isGreen()) {
+			Vehicle temp=this.r2.removeFirst();
+			if(temp!=null) {
+				this.s2AverageTimes.add(this.time-temp.getBornTime());
+			}//Ending bracket of if statement.
+		}//Ending bracket of if statement.
 
 		this.r2.step();//steps shoulder lanes
 		this.r1.step();
-		if(this.r0.getFirst()!=null) {
-			if(this.r0.getFirst().getDestination()==this.WEST) {
+		
+//TODO try cleaning this up also.
+		Vehicle temp=this.r0.getFirst();
+		if(temp!=null) {
+			if(temp.getDestination()==this.WEST) {
 				if(this.r1.lastFree()) {
 					this.r1.putLast(this.r0.removeFirst());
 				}else {
-					this.stuck1++;
-				}
-			}else if(this.r0.getFirst().getDestination()==this.SOUTH) {
+					this.stuckTime++;
+				}//Ending bracket of if statement.
+			}else if(temp.getDestination()==this.SOUTH) {
 				if(this.r2.lastFree()) {
 					this.r2.putLast(this.r0.removeFirst());
 				}else {
-					this.stuck1++;
-				}
-			}
-		}
+					this.stuckTime++;
+				}//Ending bracket of if statement.
+			}//Ending bracket of if statement.
+		}//Ending bracket of if statement.
 		this.r0.step();
 		this.r0.putLast(this.generateVehicle());
+	}//Ending Bracket of Method
 
-
-
-	}
-
+	
+	
+	/**
+	 * @return generated Vehicle using probabilities (intensity set at the top of program)
+	 */
 	public Vehicle generateVehicle(){
+		//uses the probabilities set above to generate vehicles going south, west, or null vehicles.
 		Random random = new Random();
-		int temp=random.nextInt(102);
+		int temp=random.nextInt(101);
 		if (temp<this.INTENSITY_OF_ARRIVALS) {
-			temp=random.nextInt(102);
+			temp=random.nextInt(101);
 			if(temp<this.INTENSITY_OF_SOUTH) {
 				return new Vehicle(this.time, this.SOUTH);
-			}else if(temp>=this.INTENSITY_OF_SOUTH) {
-				return new Vehicle(this.time, this.WEST);
-			}
-		}
+			}//Ending bracket of if statement.
+			return new Vehicle(this.time, this.WEST);
+		}//Ending bracket of if statement.
 		return null;
-	}
+	}//Ending Bracket of Method
 
 	/**
-	 * Print the collected statistics so far
+	 * @return the collected statistics so far
 	 */
-	public void printStatistics(){
+	public String printStatistics(){
 		StringBuffer sb = new StringBuffer();
 		sb.append("\nS1 Maximal Time = ");
 		sb.append(Collections.max(this.s1AverageTimes));
@@ -171,19 +170,20 @@ public class TrafficSystem{
 		avg = this.s2AverageTimes.stream().mapToDouble(i -> i).average();
 		sb.append("\nS2 Average Time = " + avg.getAsDouble());
 		sb.append("\nList of step times when queue was blocked\n");
-		sb.append(this.stuck1);
+		sb.append(this.stuckTime);
 
-		this.stuck1=0;
+		//resets statistics
+		this.stuckTime=0;
 		this.s1AverageTimes=new LinkedList<Integer>();
 		this.s2AverageTimes=new LinkedList<Integer>();
-		System.out.println(sb.toString());
-	}
+		return (sb.toString());
+	}//Ending Bracket of Method
 
 	/**
-	 * Prints a graphical representation of the current traffic situation
+	 * @return a graphical representation of the current traffic situation
 	 * using the toString-methods in the components.
 	 */
-	public void print(){
+	public String print(){
 		StringBuffer sb = new StringBuffer();
 		sb.append(this.s1.toString());
 		sb.append(this.r1.toString());
@@ -191,7 +191,7 @@ public class TrafficSystem{
 		sb.append("\n");
 		sb.append(this.s2.toString());
 		sb.append(this.r2.toString());
-		System.out.println(sb.toString());
+		return (sb.toString());
 
-	}
-}
+	}//Ending Bracket of Method
+}//Ending Bracket of Class TrafficSystem
