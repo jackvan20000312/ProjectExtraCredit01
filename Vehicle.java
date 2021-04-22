@@ -22,6 +22,13 @@ public class Vehicle {
 	public int getBornTime(){
 		return this.bornTime;
 	}
+	
+	/**
+	 *  Constructs a  Vehicle-object with b bornTime and d destination
+	 */
+	public char getDestination(){
+		return this.destination;
+	}
 
 	/**
 	 * @return A String-representation of the vehicle and its bornTime and destination

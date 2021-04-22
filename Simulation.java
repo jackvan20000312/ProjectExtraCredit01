@@ -14,14 +14,12 @@ public class Simulation {
 
         //...
 
-        while (true)
-        {
+        while (true){
             try {
                 // If the printouts are done each timestep, a pause is needed
                 Thread.sleep(100);
             }
-            catch (InterruptedException e)
-            {
+            catch (InterruptedException e){
             }
             tf.step();
             tf.print();

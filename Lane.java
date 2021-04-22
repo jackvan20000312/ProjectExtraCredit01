@@ -21,17 +21,20 @@ public class Lane {
 	 */
 	public void step(){
 		for(int i=1; i<this.theLane.length; i++) {
+			if(this.theLane[i-1]==null) {
 			this.theLane[i-1]=this.theLane[i];
 			this.theLane[i]=null;
+			}
 		}
 	}
 
+	
 	/**
 	 * Removes the first vehicle
 	 * @return The Vehicle at the first place or null if it is empty
 	 */
 	public Vehicle removeFirst(){
-		Vehicle temp= theLane[0];
+		Vehicle temp= this.theLane[0];
 		this.theLane[0]= null;
 		return temp;
 	}

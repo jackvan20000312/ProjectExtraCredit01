@@ -1,5 +1,8 @@
 package edu.mtc.egr283.ProjectExtraCredit01;
 
+import java.util.LinkedList;
+import java.util.Random;
+
 /** TrafficSystem *
  * Defines the lanes and signals that is to be studied. Collects statistics
  *
@@ -45,8 +48,8 @@ package edu.mtc.egr283.ProjectExtraCredit01;
  *  destination (if there are space for them).
  *
  *
-*/ public class TrafficSystem
-{
+*/ 
+public class TrafficSystem{
     // Attributes that describe the elements of the system
     private Lane r0;
     private Lane r1;
@@ -55,36 +58,121 @@ package edu.mtc.egr283.ProjectExtraCredit01;
     private Light s2;
 
     // Various attributes for simulation parameters (intensity of arrivals
+    private final int INTENSITY_OF_ARRIVALS=80;//percentage out of a hundred so 50% =50
+    private final int INTENSITY_OF_DESTINATION_SOUTH=50;//percentage out of a hundred so 50% =50
+    private final char SOUTH='S';
+    private final char WEST='W';
+    
     // destinations...)
     // Various attributes for collection of statistics
-    private int time = 0;
-
-    public TrafficSystem()
-    {
+    private final int S2_PERIOD_LENGTH=10;//time steps
+    private final int S2_GREEN_LENGTH=7;//time steps
+    private final int S1_PERIOD_LENGTH=10;//time steps
+    private final int S1_GREEN_LENGTH=7;//time steps
+    
+    private final int shoulderLength=10;
+    private final int roadLength=30;
+    private int time;
+    private int stuck1=0;
+    private int stuck2=0;
+    private LinkedList<Integer> stuckTimes;
+    private LinkedList<Integer> s1AverageTimes;
+    private LinkedList<Integer> s2AverageTimes;
+    
+    public TrafficSystem(){
+    	this.r0=new Lane(this.roadLength);
+    	this.r1=new Lane(this.shoulderLength);
+    	this.r2=new Lane(this.shoulderLength);
+    	this.s1=new Light(this.S1_PERIOD_LENGTH,this.S1_GREEN_LENGTH);
+    	this.s2=new Light(this.S2_PERIOD_LENGTH,this.S2_GREEN_LENGTH);
+    	this.time=0;
+    	this.stuckTimes=new LinkedList<Integer>();
+    	this.s1AverageTimes=new LinkedList<Integer>();
+    	this.s2AverageTimes=new LinkedList<Integer>();
+    	
     }
 
     /**
-     * Defines how vehicles should mod in the system.
-     * Steps the system one time step using the step methods in the
-     * components
+     * Defines how vehicles should move in the system.
+     * 		*if light is green, remove first vehicle from shoulder(do for both shoulders)
+     * 		*step r1&r2
+     * 		*if vehicle in r0 is W or S, send to correct Shoulder(r1, r2)
+     * 		*step r0(main road)
+     * 		*
+     * Steps the system one time step using the step methods in the components
      * Creates vehicles, add and remove into the different lanes.
     */
-    public void step()
-    {
+    public void step(){
+    	this.time++;
+    	this.s1.step();//lights
+    	this.s2.step();
+    	if(this.s1.isGreen()) {//moves vehicles in shoulder lanes
+    		this.s1AverageTimes.add(this.time-this.r1.removeFirst().getBornTime());
+    	} if(this.s2.isGreen()) {
+    		this.s2AverageTimes.add(this.time-this.r2.removeFirst().getBornTime());
+    	}
+    	
+    	this.r2.step();//steps shoulder lanes
+		this.r1.step();
+		
+    	if(this.r0.getFirst().getDestination()==this.WEST) {
+    		if(this.r1.lastFree()) {
+    			if(this.stuck1!=0) {this.stuckTimes.add(stuck1);}
+    			this.r1.putLast(this.r0.removeFirst());
+        	}else {
+        		this.stuck1++;
+        	}
+    	}else if(this.r0.getFirst().getDestination()==this.SOUTH) {
+    		if(this.r2.lastFree()) {
+    			if(this.stuck2!=0) {this.stuckTimes.add(stuck2);}
+    			this.r2.putLast(this.r0.removeFirst());
+        	}else {
+        		this.stuck2++;
+        	}
+    	}
+    	this.r0.step();
+    	this.r0.putLast(this.generateVehicle());
+    	
+    	
+    	
+    }
+    
+    public Vehicle generateVehicle(){
+    	Random random = new Random();
+    	int temp=random.nextInt(100);
+    	if (temp<this.INTENSITY_OF_DESTINATION_SOUTH) {
+    		temp=random.nextInt(100);
+    		if(temp<this.INTENSITY_OF_ARRIVALS) {
+    			return new Vehicle(this.time, this.SOUTH);
+    		}
+    	}else if(temp>=this.INTENSITY_OF_DESTINATION_SOUTH) {
+    		temp=random.nextInt(100);
+    		if(temp>=this.INTENSITY_OF_ARRIVALS) {
+    			return new Vehicle(this.time, this.WEST);
+    		}
+    	}
+    	return null;
     }
 
     /**
-     * Print the collected statistics sofar
+     * Print the collected statistics so far
     */
-    public void printStatistics()
-    {
+    public void printStatistics(){
+    	
     }
 
     /**
      * Prints a graphical representation of the current traffic situation
      * using the toString-methods in the components.
      */
-    public void print()
-    {
+    public void print(){
+    	StringBuffer sb = new StringBuffer();
+    	sb.append(s1.toString());
+    	sb.append(r1.toString());
+    	sb.append(r0.toString());
+    	sb.append("\n");
+    	sb.append(s2.toString());
+    	sb.append(r2.toString());
+    	
     }
 }
