@@ -12,7 +12,7 @@ public class Lane {
 	 */
 	public Lane(int n){
 		this.theLane = new Vehicle[n];
-	}
+	}//Ending Bracket of Method
 
 	/**
 	 * Step all vehicles (except the one in place 0) one step
@@ -22,13 +22,13 @@ public class Lane {
 	public void step(){
 		for(int i=1; i<this.theLane.length; i++) {
 			if(this.theLane[i-1]==null) {
-			this.theLane[i-1]=this.theLane[i];
-			this.theLane[i]=null;
-			}
-		}
-	}
+				this.theLane[i-1]=this.theLane[i];
+				this.theLane[i]=null;
+			}//Ending bracket of if statement.
+		}//Ending bracket of for loop.
+	}//Ending Bracket of Method
 
-	
+
 	/**
 	 * Removes the first vehicle
 	 * @return The Vehicle at the first place or null if it is empty
@@ -37,7 +37,7 @@ public class Lane {
 		Vehicle temp= this.theLane[0];
 		this.theLane[0]= null;
 		return temp;
-	}
+	}//Ending Bracket of Method
 
 	/**
 	 * Returns the first vehicle without removing it
@@ -46,7 +46,7 @@ public class Lane {
 	 */
 	public Vehicle getFirst(){
 		return this.theLane[0];
-	}
+	}//Ending Bracket of Method
 
 	/**
 	 * @return true if the last place if empty, else false
@@ -54,10 +54,9 @@ public class Lane {
 	public boolean lastFree(){
 		if(this.theLane[this.theLane.length-1]==null) {
 			return true;
-		}else {
+		}//Ending bracket of if statement.
 			return false;
-		}
-	}
+	}//Ending Bracket of Method
 
 	/**
 	 * Stores a vehicle at the end of the lane
@@ -66,8 +65,8 @@ public class Lane {
 	public void putLast(Vehicle v){
 		if(this.lastFree()) {
 			this.theLane[this.theLane.length-1]=v;
-		}
-	}
+		}//Ending bracket of if statement.
+	}//Ending Bracket of Method
 
 	/**
 	 * @return A string representation of a lane and its vehicles
@@ -80,9 +79,9 @@ public class Lane {
 				sb.append(" ");
 			}else {
 				sb.append(this.theLane[i].toString());
-			}
-		}
+			}//Ending bracket of if statement.
+		}//Ending bracket of for loop.
 		sb.append("]");
 		return sb.toString();
-	}
+	}//Ending Bracket of Method
 }

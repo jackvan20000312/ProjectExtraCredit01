@@ -1,7 +1,12 @@
 package edu.mtc.egr283.ProjectExtraCredit01;
 
-/** Simulation
- * Run a  simulation
+/**
+ * Traffic Simulator
+ * @author Jacob Vaught
+ * @professor William Sims
+ * @DueDate 04/28/2021
+ * @version 1.00 04.22.2021
+ * Copyright(c) 2021 Jacob C. Vaught. All rights reserved.
  */
 public class Simulation {
 

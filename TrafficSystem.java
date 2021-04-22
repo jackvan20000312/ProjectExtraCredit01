@@ -115,7 +115,7 @@ public class TrafficSystem{
 		this.r2.step();//steps shoulder lanes
 		this.r1.step();
 		
-//TODO try cleaning this up also.
+//TODO try cleaning this up.
 		Vehicle temp=this.r0.getFirst();
 		if(temp!=null) {
 			if(temp.getDestination()==this.WEST) {
