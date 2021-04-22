@@ -59,17 +59,17 @@ public class TrafficSystem{
 	private Light s1;
 	private Light s2;
 
-	// Various attributes for simulation parameters (intensity of arrivals
+	// Various attributes for simulation parameters (intensity of arrivals, destinations...)
 	private final int INTENSITY_OF_SOUTH=50;//percentage out of a hundred so 50% =50
 	private final int INTENSITY_OF_ARRIVALS=80;//percentage out of a hundred so 50% =50
 	private final char SOUTH='S';
 	private final char WEST='W';
 
-	// destinations...)
+	
 	// Various attributes for collection of statistics
-	private final int S1_GREEN_LENGTH=5;//time steps
-	private final int S2_GREEN_LENGTH=4;//time steps
-	private final int PERIOD_LENGTH=10;//time steps
+	private final int S1_GREEN_LENGTH=3;//time steps
+	private final int S2_GREEN_LENGTH=2;//time steps
+	private final int PERIOD_LENGTH=7;//time steps
 
 
 	private final int shoulderLength=10;
@@ -162,16 +162,16 @@ public class TrafficSystem{
 	public void printStatistics(){
 		StringBuffer sb = new StringBuffer();
 		sb.append("\nS1 Maximal Time = ");
-		sb.append(Collections.max(s1AverageTimes));
-		OptionalDouble avg = s1AverageTimes.stream().mapToDouble(i -> i).average();
+		sb.append(Collections.max(this.s1AverageTimes));
+		OptionalDouble avg = this.s1AverageTimes.stream().mapToDouble(i -> i).average();
 		sb.append("\nS1 Average Time = " + avg.getAsDouble());
 
 		sb.append("\nS2 Maximal Time = ");
-		sb.append(Collections.max(s2AverageTimes));
-		avg = s2AverageTimes.stream().mapToDouble(i -> i).average();
+		sb.append(Collections.max(this.s2AverageTimes));
+		avg = this.s2AverageTimes.stream().mapToDouble(i -> i).average();
 		sb.append("\nS2 Average Time = " + avg.getAsDouble());
 		sb.append("\nList of step times when queue was blocked\n");
-		sb.append(stuck1);
+		sb.append(this.stuck1);
 
 		this.stuck1=0;
 		this.s1AverageTimes=new LinkedList<Integer>();
@@ -185,12 +185,12 @@ public class TrafficSystem{
 	 */
 	public void print(){
 		StringBuffer sb = new StringBuffer();
-		sb.append(s1.toString());
-		sb.append(r1.toString());
-		sb.append(r0.toString());
+		sb.append(this.s1.toString());
+		sb.append(this.r1.toString());
+		sb.append(this.r0.toString());
 		sb.append("\n");
-		sb.append(s2.toString());
-		sb.append(r2.toString());
+		sb.append(this.s2.toString());
+		sb.append(this.r2.toString());
 		System.out.println(sb.toString());
 
 	}

@@ -14,16 +14,16 @@ public class Simulation {
 
         //...
 int i=0;
-        while (i<10000){
-//            try {
-//                // If the printouts are done each timestep, a pause is needed
-//                Thread.sleep(500);
-//            }
-//            catch (InterruptedException e){
-//            }
+        while (i<100){
+           try {
+                // If the printouts are done each timestep, a pause is needed
+                Thread.sleep(50);
+            }
+            catch (InterruptedException e){
+            }
             tf.step();
             tf.print();
-            i+=10;
+            i++;
         }
         tf.printStatistics();
         ///...
