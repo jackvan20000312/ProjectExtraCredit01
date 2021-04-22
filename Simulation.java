@@ -18,10 +18,10 @@ public class Simulation {
 			}catch (InterruptedException e){
 			}
 			tf.step();
-			System.out.print(tf.print());
+			System.out.println(tf.print());
 			i++;
 		}//end of while loop
-		System.out.print(tf.printStatistics());
+		System.out.println(tf.printStatistics());
 
 	}//end of main method
 }//end of class
