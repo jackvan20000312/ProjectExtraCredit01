@@ -62,10 +62,12 @@ public class Lane {
 	 * Stores a vehicle at the end of the lane
 	 * @param v The vehicle that is to be stored
 	 */
-	public void putLast(Vehicle v){
+	public boolean putLast(Vehicle v){
 		if(this.lastFree()) {
 			this.theLane[this.theLane.length-1]=v;
+			return true;
 		}//Ending bracket of if statement.
+		return false;
 	}//Ending Bracket of Method
 
 	/**

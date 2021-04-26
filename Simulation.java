@@ -16,10 +16,10 @@ public class Simulation {
 	public static void main(String [] args){
 		TrafficSystem tf = new TrafficSystem();
 		int i=0;
-		while (i<100){
+		while (i<500){
 			try {
 				// If the printouts are done each timestep, a pause is needed
-				Thread.sleep(50);
+				Thread.sleep(10);
 			}catch (InterruptedException e){
 			}
 			tf.step();

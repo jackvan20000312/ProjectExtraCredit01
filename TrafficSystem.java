@@ -21,11 +21,11 @@ import java.util.Random;
  *
  *     Lane    Represents a piece of a road
  *             A lane is represented by an array where each element
- *             either is empty or contain a reference to a
+ *             either is empty/null or contains a reference to a
  *             vehicle-object.
  *
  *     TrafficSystem
- *             Defines the components, ie the lanes  and signals that
+ *             Defines the components, i.e. the lanes  and signals that
  *             build the system. See below
  *
  *     Simulation
@@ -41,13 +41,13 @@ import java.util.Random;
  *  A lane (a piece of a road) r0 split into two files r1 and r2 at X.
  *  The signal s1 controls the lane r1 and the signal s2 the lane r2.
  *
- *  Vehicles are create at E. The probability that a vehicle arrives to E
+ *  Vehicles are created at E. The probability that a vehicle arrives to E
  *  at a certain time is called "the intensity of arrival".
  *
  *  At a time step the vehicles move one step forward  (if possible).
- *  At C, the vehicles are removed from the system if the resp signal is green.
- *  At X, vehicles are move from r0 to either r1 or r2 depending of its
- *  destination (if there are space for them).
+ *  At C, the vehicles are removed from the system if the corresponding signal is green.
+ *  At X, vehicles are moved from r0 to either r1 or r2, dependent on its
+ *  destination (if there are spaces for them).
  *
  *
  */ 
@@ -65,10 +65,10 @@ public class TrafficSystem{
 	private final char SOUTH='S';
 	private final char WEST='W';
 	private final int S1_GREEN_LENGTH=3;//time steps
-	private final int S2_GREEN_LENGTH=2;//time steps
+	private final int S2_GREEN_LENGTH=4;//time steps
 	private final int PERIOD_LENGTH=7;//time steps
 	private final int TWO_ROADS_LENGTH=10;
-	private final int ROADLENGTH=30;
+	private final int MAIN_ROAD_LENGTH=30;
 
 	// Various attributes for collection of statistics
 	private int time;//internal clock
@@ -78,7 +78,7 @@ public class TrafficSystem{
 
 
 	public TrafficSystem(){
-		this.r0=new Lane(this.ROADLENGTH);
+		this.r0=new Lane(this.MAIN_ROAD_LENGTH);
 		this.r1=new Lane(this.TWO_ROADS_LENGTH);
 		this.r2=new Lane(this.TWO_ROADS_LENGTH);
 		this.s1=new Light(this.PERIOD_LENGTH, this.S1_GREEN_LENGTH);
@@ -92,6 +92,29 @@ public class TrafficSystem{
 	 * Defines how vehicles should move in the system.
 	 * Steps the system one time step using the step methods in the components
 	 * Creates vehicles, add and remove into the different lanes.
+	 * Step Internal clock
+	 * Step traffic lights
+	 * if (light is green){
+	 * remove first vehicle in shoulder lanes 
+	 * and add time of vehicle on the road to statistic(queue, stack, arraylist, linkedlist)
+	 * }
+	 * step shoulder lanes
+	 * 
+	 * get first vehicle on main road
+	 * if vehicle is not null, {
+	 * if destination = west{
+	 * if (cannot add r0 first to r1 last){
+	 * increment stuck time (statistic, integer )
+	 * }
+	 * }
+	 * else if (cannot add r0 first to r2 last){
+	 * increment stuck time (statistic, integer )
+	 * }
+	 * }
+	 * }
+	 * step r0
+	 * set last of r0 to newly generated vehicle
+	 * 
 	 */
 	public void step(){
 		this.time++;
@@ -101,33 +124,29 @@ public class TrafficSystem{
 		if(this.s1.isGreen()) {//moves vehicles in shoulder lanes
 			Vehicle temp=this.r1.removeFirst();
 			if(temp!=null) {
-				this.s1AverageTimes.add(this.time-temp.getBornTime());
+				this.s1AverageTimes.addFirst(this.time-temp.getBornTime());
 			}//Ending bracket of if statement.
 		} //Ending bracket of if statement.
 
 		if(this.s2.isGreen()) {
 			Vehicle temp=this.r2.removeFirst();
 			if(temp!=null) {
-				this.s2AverageTimes.add(this.time-temp.getBornTime());
+				this.s2AverageTimes.addFirst(this.time-temp.getBornTime());
 			}//Ending bracket of if statement.
 		}//Ending bracket of if statement.
 
 		this.r2.step();//steps shoulder lanes
 		this.r1.step();
-		
-//TODO try cleaning this up.
+
+		//TODO try cleaning this up.
 		Vehicle temp=this.r0.getFirst();
 		if(temp!=null) {
 			if(temp.getDestination()==this.WEST) {
-				if(this.r1.lastFree()) {
-					this.r1.putLast(this.r0.removeFirst());
-				}else {
+				if(!this.r1.putLast(this.r0.removeFirst())) {
 					this.stuckTime++;
 				}//Ending bracket of if statement.
 			}else if(temp.getDestination()==this.SOUTH) {
-				if(this.r2.lastFree()) {
-					this.r2.putLast(this.r0.removeFirst());
-				}else {
+				if(!this.r2.putLast(this.r0.removeFirst())) {
 					this.stuckTime++;
 				}//Ending bracket of if statement.
 			}//Ending bracket of if statement.
@@ -136,8 +155,8 @@ public class TrafficSystem{
 		this.r0.putLast(this.generateVehicle());
 	}//Ending Bracket of Method
 
-	
-	
+
+
 	/**
 	 * @return generated Vehicle using probabilities (intensity set at the top of program)
 	 */
@@ -145,9 +164,9 @@ public class TrafficSystem{
 		//uses the probabilities set above to generate vehicles going south, west, or null vehicles.
 		Random random = new Random();
 		int temp=random.nextInt(101);
-		if (temp<this.INTENSITY_OF_ARRIVALS) {
+		if (temp<=this.INTENSITY_OF_ARRIVALS) {
 			temp=random.nextInt(101);
-			if(temp<this.INTENSITY_OF_SOUTH) {
+			if(temp<=this.INTENSITY_OF_SOUTH) {
 				return new Vehicle(this.time, this.SOUTH);
 			}//Ending bracket of if statement.
 			return new Vehicle(this.time, this.WEST);
