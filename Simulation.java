@@ -21,7 +21,7 @@ public class Simulation {
 				// If the printouts are done each timestep, a pause is needed
 				Thread.sleep(10);
 			}catch (InterruptedException e){
-			}
+			}//end of catch
 			tf.step();
 			System.out.println(tf.print());
 			i++;

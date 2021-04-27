@@ -67,8 +67,8 @@ public class TrafficSystem{
 	private final int S1_GREEN_LENGTH=3;//time steps
 	private final int S2_GREEN_LENGTH=4;//time steps
 	private final int PERIOD_LENGTH=7;//time steps
-	private final int TWO_ROADS_LENGTH=10;
-	private final int MAIN_ROAD_LENGTH=30;
+	private final int TWO_ROADS_LENGTH=6;
+	private static final int MAIN_ROAD_LENGTH=30;
 
 	// Various attributes for collection of statistics
 	private int time;//internal clock
@@ -78,7 +78,7 @@ public class TrafficSystem{
 
 
 	public TrafficSystem(){
-		this.r0=new Lane(this.MAIN_ROAD_LENGTH);
+		this.r0=new Lane(TrafficSystem.MAIN_ROAD_LENGTH);
 		this.r1=new Lane(this.TWO_ROADS_LENGTH);
 		this.r2=new Lane(this.TWO_ROADS_LENGTH);
 		this.s1=new Light(this.PERIOD_LENGTH, this.S1_GREEN_LENGTH);
