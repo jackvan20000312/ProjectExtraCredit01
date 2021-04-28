@@ -59,8 +59,10 @@ public class Lane {
 	}//Ending Bracket of Method
 
 	/**
-	 * Stores a vehicle at the end of the lane
+	 * Stores a vehicle at the end of the lane. 
+	 * Made slight change, returns boolean instead of void 
 	 * @param v The vehicle that is to be stored
+	 * @return true if addition was successful, else return false
 	 */
 	public boolean putLast(Vehicle v){
 		if(this.lastFree()) {

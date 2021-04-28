@@ -14,19 +14,21 @@ public class Simulation {
 	 * Create a TrafficSystem, steps it and calls the print methods
 	 */
 	public static void main(String [] args){
-		TrafficSystem tf = new TrafficSystem();
-		int i=0;
-		while (i<500){
+		TrafficSystem trafficSystem = new TrafficSystem();
+		
+		for(int i=0; i<500; i++){
+			
+			//if you do not care what the simulation looks like and just want the statistics, comment out line 22-26 and line 28
 			try {
 				// If the printouts are done each timestep, a pause is needed
 				Thread.sleep(10);
 			}catch (InterruptedException e){
 			}//end of catch
-			tf.step();
-			System.out.println(tf.print());
-			i++;
+			trafficSystem.step();
+			System.out.println(trafficSystem.print());
 		}//end of while loop
-		System.out.println(tf.printStatistics());
+		
+		System.out.println(trafficSystem.printStatistics());
 
 	}//end of main method
 }//end of class
